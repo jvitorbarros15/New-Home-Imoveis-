@@ -2,7 +2,7 @@
 
 import { useTweaks, TweaksPanel, TweakSection, TweakRadio } from './tweaks-panel.jsx';
 import { Nav } from './sections.jsx';
-import { USAHero, USAMarkets, USAWhy, USACTA, USAFooter } from './usa-sections.jsx';
+import { USAHero, USAMarkets, USAWhy, USAStats, USACTA, USAFooter } from './usa-sections.jsx';
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{ "brand": "aurum", "motion": "on" }/*EDITMODE-END*/;
 
@@ -30,6 +30,7 @@ function USAApp() {
       <USAHero />
       <USAMarkets />
       <USAWhy />
+      <USAStats />
       <USACTA />
       <USAFooter />
       <TweaksPanel>

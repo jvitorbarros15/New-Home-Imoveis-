@@ -489,3 +489,30 @@ input, select, textarea { font: inherit; color: var(--ink); background: transpar
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* ── Table utility classes ───────────────────────────────── */
+.adm-td-muted  { color: var(--ink-3); font-size: 12px; }
+.adm-td-strong { font-weight: 500; color: var(--ink); }
+.adm-td-nowrap { white-space: nowrap; }
+.adm-link {
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.adm-link:hover { opacity: 0.75; }
+
+.adm-error-banner {
+  background: oklch(0.35 0.15 25 / 0.15);
+  border: 1px solid oklch(0.55 0.15 25 / 0.4);
+  color: oklch(0.80 0.12 25);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.adm-loading-inline {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}

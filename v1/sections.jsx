@@ -530,6 +530,42 @@ export function Depoimentos() {
 
 /* ------ CTA ------------------------------------------------------- */
 export function CTA() {
+  const [nome, setNome]           = React.useState("");
+  const [whatsapp, setWhatsapp]   = React.useState("");
+  const [email, setEmail]         = React.useState("");
+  const [interesse, setInteresse] = React.useState("");
+  const [estado, setEstado]       = React.useState("idle");
+
+  async function submit(e) {
+    e.preventDefault();
+    setEstado("loading");
+    try {
+      const { error } = await window.sb.from("leads").insert({
+        name: nome, whatsapp, email, interest: interesse, source: "brasil",
+      });
+      if (error) throw error;
+      setEstado("done");
+    } catch {
+      setEstado("error");
+    }
+  }
+
+  if (estado === "done") {
+    return (
+      <section id="contato" className="cta" style={{ maxWidth: "100%" }}>
+        <div className="cta-bg" style={{ backgroundImage: "url(https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=2000&q=80&auto=format&fit=crop)" }} />
+        <div className="cta-body">
+          <span className="eyebrow">Obrigado!</span>
+          <h2 style={{ marginTop: 20 }}>Recebemos sua mensagem, <em>{nome}</em>.</h2>
+          <p>Um consultor entrará em contato pelo WhatsApp em até 1 dia útil.</p>
+        </div>
+        <div className="cta-form" style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48 }}>
+          ✓
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="contato" className="cta reveal" style={{ maxWidth: "100%" }}>
       <div className="cta-bg" style={{ backgroundImage: "url(https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=2000&q=80&auto=format&fit=crop)" }} />
@@ -539,21 +575,37 @@ export function CTA() {
         <p>Conte para nós o que procura — região, perfil, momento de vida. Um consultor da New Home retornará
           com uma seleção desenhada para você, em até um dia útil.</p>
       </div>
-      <form className="cta-form" onSubmit={(e) => { e.preventDefault(); alert("Obrigado! Em breve entraremos em contato."); }}>
+      <form className="cta-form" onSubmit={submit} noValidate>
         <h3>Fale com um consultor</h3>
-        <label>Nome<input required placeholder="Como prefere ser chamado" /></label>
-        <label>WhatsApp<input required placeholder="(21) 99999-9999" /></label>
-        <label>E-mail<input type="email" required placeholder="seu@email.com" /></label>
-        <label>O que procura?
-          <select defaultValue="">
+        <label htmlFor="cta-nome">Nome
+          <input id="cta-nome" required placeholder="Como prefere ser chamado"
+                 value={nome} onChange={e => setNome(e.target.value)} />
+        </label>
+        <label htmlFor="cta-wa">WhatsApp
+          <input id="cta-wa" required placeholder="(21) 99999-9999"
+                 value={whatsapp} onChange={e => setWhatsapp(e.target.value)} />
+        </label>
+        <label htmlFor="cta-email">E-mail
+          <input id="cta-email" type="email" placeholder="seu@email.com"
+                 value={email} onChange={e => setEmail(e.target.value)} />
+        </label>
+        <label htmlFor="cta-int">O que procura?
+          <select id="cta-int" value={interesse} onChange={e => setInteresse(e.target.value)} required>
             <option value="" disabled>Selecione</option>
-            <option>Comprar imóvel</option>
-            <option>Alugar imóvel</option>
-            <option>Anunciar imóvel</option>
-            <option>Investir</option>
+            <option value="Comprar imóvel">Comprar imóvel</option>
+            <option value="Alugar imóvel">Alugar imóvel</option>
+            <option value="Anunciar imóvel">Anunciar imóvel</option>
+            <option value="Investir">Investir</option>
           </select>
         </label>
-        <button type="submit">Solicitar contato</button>
+        {estado === "error" && (
+          <p style={{ color: "oklch(0.75 0.18 25)", fontSize: 13, margin: 0 }} role="alert">
+            Erro ao enviar. Tente novamente.
+          </p>
+        )}
+        <button type="submit" disabled={estado === "loading"} aria-busy={estado === "loading"}>
+          {estado === "loading" ? "Enviando…" : "Solicitar contato"}
+        </button>
       </form>
     </section>
   );

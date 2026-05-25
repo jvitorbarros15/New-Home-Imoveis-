@@ -2,8 +2,9 @@
 
 import { ListingsView } from './admin-listings.jsx';
 import { PropertyForm } from './admin-form.jsx';
+import { LeadsView } from './admin-leads.jsx';
 
-const ADM_VIEWS = { listings: "listings", newProp: "newProp", editProp: "editProp" };
+const ADM_VIEWS = { listings: "listings", newProp: "newProp", editProp: "editProp", leads: "leads" };
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_SECONDS = 60;
 
@@ -18,6 +19,7 @@ const IList   = () => <AIcon d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.0
 const IPlus   = () => <AIcon d="M12 5v14M5 12h14" />;
 const ILogout = () => <AIcon d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />;
 const IHome   = () => <AIcon d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10" />;
+const IUsers  = () => <AIcon d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />;
 
 /* ------ Login form ------ */
 function Login() {
@@ -124,6 +126,7 @@ function Sidebar({ view, setView, onLogout }) {
   const items = [
     { id: ADM_VIEWS.listings, label: "Imóveis",     icon: <IList /> },
     { id: ADM_VIEWS.newProp,  label: "Novo imóvel", icon: <IPlus /> },
+    { id: ADM_VIEWS.leads,    label: "Leads",       icon: <IUsers /> },
   ];
   return (
     <aside className="adm-sidebar" aria-label="Navegação admin">
@@ -210,6 +213,7 @@ function AdminApp() {
         {view === ADM_VIEWS.listings && <ListingsView onEdit={handleEdit} />}
         {view === ADM_VIEWS.newProp  && <PropertyForm onSaved={handleSaved} />}
         {view === ADM_VIEWS.editProp && editProp && <PropertyForm prop={editProp} onSaved={handleSaved} />}
+        {view === ADM_VIEWS.leads    && <LeadsView />}
       </main>
     </div>
   );
