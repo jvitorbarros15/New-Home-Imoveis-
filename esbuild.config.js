@@ -72,12 +72,40 @@ if (watch) {
   usaConfig.watch = { onRebuild(err) { err ? console.error("usa build failed:", err) : console.log("usa rebuilt"); } };
 }
 
+// Financiamento bundle
+const financiamentoConfig = {
+  entryPoints: [path.join(__dirname, "v1", "financiamento-page.jsx")],
+  bundle: true,
+  minify: true,
+  outfile: path.join(distDir, "financiamento.js"),
+  external: ["react", "react-dom"],
+  target: "es2020",
+};
+if (watch) {
+  financiamentoConfig.watch = { onRebuild(err) { err ? console.error("financiamento build failed:", err) : console.log("financiamento rebuilt"); } };
+}
+
+// Quem Somos bundle
+const quemSomosConfig = {
+  entryPoints: [path.join(__dirname, "v1", "quem-somos-page.jsx")],
+  bundle: true,
+  minify: true,
+  outfile: path.join(distDir, "quem-somos.js"),
+  external: ["react", "react-dom"],
+  target: "es2020",
+};
+if (watch) {
+  quemSomosConfig.watch = { onRebuild(err) { err ? console.error("quem-somos build failed:", err) : console.log("quem-somos rebuilt"); } };
+}
+
 // Build all
 Promise.all([
   esbuild.build(homepageConfig),
   esbuild.build(imovelConfig),
   esbuild.build(adminConfig),
   esbuild.build(usaConfig),
+  esbuild.build(financiamentoConfig),
+  esbuild.build(quemSomosConfig),
 ]).then(() => {
   // Minify and copy CSS files
   const cssFiles = [

@@ -1,4 +1,7 @@
 // Quem Somos page
+import { useTweaks, TweaksPanel, TweakSection, TweakRadio } from './tweaks-panel.jsx';
+import { Nav, Footer, useReveal } from './sections.jsx';
+import { Chat } from './chat.jsx';
 
 function QuemSomos() {
   return (

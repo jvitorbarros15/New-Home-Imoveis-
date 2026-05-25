@@ -97,7 +97,7 @@ function useTheme() {
   return [theme, toggle];
 }
 
-function useReveal() {
+export function useReveal() {
   React.useEffect(() => {
     const els = document.querySelectorAll(".reveal");
     const io = new IntersectionObserver((entries) => {
