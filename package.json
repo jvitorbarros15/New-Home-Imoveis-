@@ -1,0 +1,16 @@
+{
+  "name": "new-home-imoveis",
+  "version": "1.0.0",
+  "description": "Luxury real estate website for New Home Imóveis",
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "dev": "node esbuild.config.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.4"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
