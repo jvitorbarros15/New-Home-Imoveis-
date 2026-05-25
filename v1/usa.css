@@ -1,0 +1,159 @@
+/* ── USA Hero ─────────────────────────────────────────────── */
+.usa-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+.usa-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 55%, oklch(0.78 0.13 85 / 0.07) 0%, transparent 65%),
+    linear-gradient(160deg, var(--bg) 0%, var(--bg-2) 100%);
+}
+.usa-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  padding: 120px 24px 80px;
+}
+.usa-hero-wordmark {
+  font-family: var(--serif);
+  font-size: clamp(42px, 8vw, 72px);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  margin-bottom: 20px;
+  line-height: 1.1;
+}
+.usa-hero-wordmark em {
+  font-style: italic;
+  color: var(--accent);
+}
+.usa-hero-tagline {
+  font-size: 16px;
+  color: var(--ink-2);
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  margin-bottom: 36px;
+}
+.usa-hero-markets {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+.usa-hero-markets span {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+.usa-hero-cta {
+  display: inline-block;
+  padding: 14px 36px;
+  background: oklch(0.78 0.13 85);
+  color: #0c0a06;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: opacity 0.2s;
+}
+.usa-hero-cta:hover { opacity: 0.85; }
+
+/* ── Markets ──────────────────────────────────────────────── */
+.usa-markets {
+  padding: 96px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.usa-markets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+.usa-market-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.usa-market-card:hover {
+  border-color: var(--line-2);
+  transform: translateY(-2px);
+}
+.usa-market-img {
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+}
+.usa-market-body { padding: 24px; }
+.usa-market-city {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
+.usa-market-state {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 6px 0 14px;
+}
+.usa-market-body p {
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── Why ──────────────────────────────────────────────────── */
+.usa-why {
+  padding: 96px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.usa-why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+.usa-why-card {
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  transition: border-color 0.2s;
+}
+.usa-why-card:hover { border-color: var(--line-2); }
+.usa-why-card h4 {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 400;
+  margin: 0 0 12px;
+  letter-spacing: 0.01em;
+}
+.usa-why-card p {
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .usa-hero-wordmark { font-size: 38px; }
+  .usa-markets-grid  { grid-template-columns: 1fr; }
+  .usa-why-grid      { grid-template-columns: 1fr; }
+}
