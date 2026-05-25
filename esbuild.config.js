@@ -59,17 +59,32 @@ if (watch) {
   adminConfig.watch = { onRebuild(err) { err ? console.error("admin build failed:", err) : console.log("admin rebuilt"); } };
 }
 
+// USA bundle
+const usaConfig = {
+  entryPoints: [path.join(__dirname, "v1", "usa-app.jsx")],
+  bundle: true,
+  minify: true,
+  outfile: path.join(distDir, "usa.js"),
+  external: ["react", "react-dom"],
+  target: "es2020",
+};
+if (watch) {
+  usaConfig.watch = { onRebuild(err) { err ? console.error("usa build failed:", err) : console.log("usa rebuilt"); } };
+}
+
 // Build all
 Promise.all([
   esbuild.build(homepageConfig),
   esbuild.build(imovelConfig),
   esbuild.build(adminConfig),
+  esbuild.build(usaConfig),
 ]).then(() => {
   // Minify and copy CSS files
   const cssFiles = [
     { src: "v1/styles.css", dst: "v1/dist/styles.css" },
     { src: "v1/imovel.css", dst: "v1/dist/imovel.css" },
-    { src: "v1/admin.css", dst: "v1/dist/admin.css" },
+    { src: "v1/admin.css",  dst: "v1/dist/admin.css"  },
+    { src: "v1/usa.css",    dst: "v1/dist/usa.css"    },
   ];
 
   cssFiles.forEach(({ src, dst }) => {
