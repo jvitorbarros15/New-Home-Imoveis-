@@ -1055,3 +1055,5 @@ footer {
   .reveal { opacity: 1; transform: none; transition: none; }
   .hero-scroll::after { animation: none; opacity: 0.6; transform: none; }
 }
+
+@keyframes spin { to { transform: rotate(360deg); } }
