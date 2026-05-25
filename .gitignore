@@ -4,3 +4,4 @@ docs/superpowers/
 skills-lock.json
 .agents/
 .claude/
+v1/dist/
