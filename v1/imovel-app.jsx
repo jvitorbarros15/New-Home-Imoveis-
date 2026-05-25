@@ -39,7 +39,7 @@ function ImovelApp() {
           status:     data.status === "active" ? "À venda" : data.status === "rented" ? "Aluguel" : "Vendido",
           address:    data.address || PROP.address,
           region:     data.region,
-          price:      data.price_brl / 100,
+          price:      data.price_brl != null ? data.price_brl / 100 : PROP.price,
           condominio: data.condominio_brl ? data.condominio_brl / 100 : PROP.condominio,
           iptu:       data.iptu_brl ? data.iptu_brl / 100 : PROP.iptu,
           specs: {
@@ -61,7 +61,8 @@ function ImovelApp() {
           tourUrl: data.tour_url || null,
         });
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   const openLb = (i) => { setLbIdx(i); setLbOpen(true); };
