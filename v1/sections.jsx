@@ -156,11 +156,12 @@ export function Nav({ brand }) {
   }, []);
 
   const navLinks = [
-    { href: "index.html#destaques", label: "Imóveis",      page: "index.html" },
-    { href: "index.html#bairros",   label: "Bairros",       page: "index.html" },
-    { href: "financiamento.html",   label: "Financiamento", page: "financiamento.html" },
-    { href: "quem-somos.html",      label: "Quem somos",    page: "quem-somos.html" },
-    { href: "index.html#contato",   label: "Contato",       page: "index.html" },
+    { href: "index.html#destaques", label: "Imóveis",       page: "index.html" },
+    { href: "index.html#bairros",   label: "Bairros",        page: "index.html" },
+    { href: "financiamento.html",   label: "Financiamento",  page: "financiamento.html" },
+    { href: "quem-somos.html",      label: "Quem somos",     page: "quem-somos.html" },
+    { href: "usa.html",             label: "New Home USA",   page: "usa.html" },
+    { href: "index.html#contato",   label: "Contato",        page: "index.html" },
   ];
 
   return (
