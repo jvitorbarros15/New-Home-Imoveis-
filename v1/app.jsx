@@ -1,5 +1,8 @@
 // New Home Imóveis — app shell + Tweaks
 
+// Import tweaks utilities
+const { useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakSlider } = window;
+
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "brand": "aurum",
   "motion": window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "off" : "on",
