@@ -49,7 +49,7 @@ function ListingsView({ onEdit }) {
     <>
       <div className="adm-header">
         <div>
-          <h1 className="adm-title">Imóveis</h1>
+          <h1 className="adm-title">Gestão de <em>imóveis</em></h1>
           <p className="adm-subtitle">
             {loading ? "Carregando..." : `${props.length} listagem${props.length !== 1 ? "s" : ""} cadastrada${props.length !== 1 ? "s" : ""}`}
           </p>

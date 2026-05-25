@@ -67,7 +67,10 @@ function Login() {
   return (
     <div className="adm-login" role="main">
       <div className="adm-login-card">
-        <div className="adm-login-logo">New Home <span>Admin</span></div>
+        <div className="adm-login-logo">
+          <div className="adm-login-wordmark">New Home <em>Imóveis</em></div>
+          <div className="adm-login-logo-sub">Painel administrativo</div>
+        </div>
         <h1>Entrar</h1>
         <p>Acesso restrito à equipe interna.</p>
         <form onSubmit={submit} noValidate>
@@ -121,7 +124,10 @@ function Sidebar({ view, setView, onLogout }) {
   ];
   return (
     <aside className="adm-sidebar" aria-label="Navegação admin">
-      <div className="adm-logo" aria-label="New Home Admin">NH <span>Admin</span></div>
+      <div className="adm-logo" aria-label="New Home Imóveis">
+        <div className="adm-logo-wordmark">New Home <em>Imóveis</em></div>
+        <div className="adm-logo-sub">Admin</div>
+      </div>
       <nav className="adm-nav" aria-label="Menu principal">
         {items.map(it => (
           <button
