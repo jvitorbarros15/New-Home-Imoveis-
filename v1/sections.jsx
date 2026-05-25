@@ -22,6 +22,8 @@ const IconFB     = (p) => <SVG {...p} size={14}><path d="M18 2h-3a5 5 0 0 0-5 5v
 const IconWA     = (p) => <SVG {...p} size={14}><path d="M21 12a9 9 0 1 1-3.5-7.1L21 3l-1.4 4A9 9 0 0 1 21 12z" /><path d="M9 9c0 4 3 7 7 7l1.5-2-2.5-1-1 1c-1 0-3-2-3-3l1-1-1-2.5L9 9z" /></SVG>;
 const IconMoon   = (p) => <SVG {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></SVG>;
 const IconSun    = (p) => <SVG {...p}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></SVG>;
+const IconMenu   = (p) => <SVG {...p}><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></SVG>;
+const IconX      = (p) => <SVG {...p}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></SVG>;
 
 /* ------ Property data --------------------------------------------- */
 const FEATURED = [
@@ -132,6 +134,7 @@ function CountUp({ to, suffix = "", duration = 1800 }) {
 /* ------ Nav ------------------------------------------------------- */
 function Nav({ brand }) {
   const [scrolled, setScrolled] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
   const [theme, toggleTheme] = useTheme();
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
@@ -139,6 +142,17 @@ function Nav({ brand }) {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  React.useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") setMenuOpen(false); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, []);
 
   const navLinks = [
@@ -150,29 +164,55 @@ function Nav({ brand }) {
   ];
 
   return (
-    <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
-      <a className="nav-logo" href="index.html">
-        <img src={brand === "insignia" ? "assets/logo-navy.jpg" : "assets/logo-gold.png"} alt="New Home Imóveis" />
-      </a>
-      <div className="nav-links">
-        {navLinks.map(({ href, label, page }) => (
-          <a key={label} href={href} className={currentPage === page ? "active" : ""}>{label}</a>
-        ))}
-      </div>
-      <div className="nav-actions">
-        <button
-          className="nav-theme-toggle"
-          onClick={toggleTheme}
-          aria-label={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}
-        >
-          {theme === "dark" ? <IconSun size={16} /> : <IconMoon size={16} />}
-        </button>
-        <a className="nav-phone" href="tel:+5521999999999">
-          <IconPhone /> +55 21 99999-9999
+    <>
+      <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
+        <a className="nav-logo" href="index.html">
+          <img src={brand === "insignia" ? "assets/logo-navy.jpg" : "assets/logo-gold.png"} alt="New Home Imóveis" />
         </a>
-        <a className="nav-cta" href="index.html#contato">Anuncie seu imóvel</a>
+        <div className="nav-links">
+          {navLinks.map(({ href, label, page }) => (
+            <a key={label} href={href} className={currentPage === page ? "active" : ""}>{label}</a>
+          ))}
+        </div>
+        <div className="nav-actions">
+          <button
+            className="nav-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}
+          >
+            {theme === "dark" ? <IconSun size={16} /> : <IconMoon size={16} />}
+          </button>
+          <a className="nav-phone" href="tel:+5521999999999">
+            <IconPhone /> +55 21 99999-9999
+          </a>
+          <a className="nav-cta" href="index.html#contato">Anuncie seu imóvel</a>
+          <button
+            className="nav-menu-btn"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Abrir menu"
+            aria-expanded={menuOpen}
+          >
+            <IconMenu size={18} />
+          </button>
+        </div>
+      </nav>
+
+      <div className={`nav-mobile ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
+        <button className="nav-mobile-close" onClick={() => setMenuOpen(false)} aria-label="Fechar menu">
+          <IconX size={20} />
+        </button>
+        {navLinks.map(({ href, label, page }) => (
+          <a key={label} href={href}
+             className={currentPage === page ? "active" : ""}
+             onClick={() => setMenuOpen(false)}
+             tabIndex={menuOpen ? 0 : -1}
+          >{label}</a>
+        ))}
+        <a className="nav-mobile-cta" href="index.html#contato" onClick={() => setMenuOpen(false)} tabIndex={menuOpen ? 0 : -1}>
+          Anuncie seu imóvel
+        </a>
       </div>
-    </nav>
+    </>
   );
 }
 
@@ -299,7 +339,7 @@ function Destaques() {
       </div>
 
       <div className="destaques">
-        <div className="dest-hero" onClick={() => { window.location.href = "imovel.html"; }} style={{ cursor: "pointer" }}>
+        <a className="dest-hero dest-hero-link" href="imovel.html">
           <div className="img" style={{ backgroundImage: `url(${featured.img})` }} />
           <div className="meta">
             <div>
@@ -317,11 +357,13 @@ function Destaques() {
               {featured.price}
             </div>
           </div>
-        </div>
+        </a>
 
         <div className="dest-list">
           {FEATURED.map((p, i) => (
-            <div key={i} className="dest-card" onMouseEnter={() => setHover(i)} onClick={() => { window.location.href = "imovel.html"; }}>
+            <a key={i} className="dest-card" href="imovel.html"
+               onMouseEnter={() => setHover(i)}
+               onFocus={() => setHover(i)}>
               <div className="dc-imgwrap"><div className="dc-img" style={{ backgroundImage: `url(${p.img})` }} /></div>
               <div className="dc-body">
                 <div>
@@ -336,7 +378,7 @@ function Destaques() {
                 <div className="dc-price">{p.price}</div>
               </div>
               <div className="dc-arrow"><IconArrow size={12} /></div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
@@ -360,7 +402,9 @@ function Bairros() {
         </div>
         <div className="bairros-rail" ref={railRef}>
           {BAIRROS.map((b, i) => (
-            <div key={i} className="bairro">
+            <div key={i} className="bairro" tabIndex={0} role="button"
+                 aria-label={`${b.name} — ${b.count} imóveis`}
+                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") window.location.href = `index.html?bairro=${encodeURIComponent(b.name)}`; }}>
               <div className="img" style={{ backgroundImage: `url(${b.img})` }} />
               <div className="grad" />
               <div className="pin"><IconPin size={14} /></div>

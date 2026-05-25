@@ -2,7 +2,7 @@
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "brand": "aurum",
-  "motion": "on",
+  "motion": window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "off" : "on",
   "density": "regular",
   "accentIntensity": 100
 }/*EDITMODE-END*/;
