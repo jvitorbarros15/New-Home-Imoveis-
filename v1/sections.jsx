@@ -132,7 +132,7 @@ function CountUp({ to, suffix = "", duration = 1800 }) {
 }
 
 /* ------ Nav ------------------------------------------------------- */
-function Nav({ brand }) {
+export function Nav({ brand }) {
   const [scrolled, setScrolled] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [theme, toggleTheme] = useTheme();
@@ -217,7 +217,7 @@ function Nav({ brand }) {
 }
 
 /* ------ Hero ------------------------------------------------------ */
-function Hero({ motion }) {
+export function Hero({ motion }) {
   const [idx, setIdx] = React.useState(0);
   const [pretensao, setPretensao] = React.useState("Comprar");
   const [tipo, setTipo] = React.useState("Apartamento");
@@ -320,7 +320,7 @@ function Hero({ motion }) {
 }
 
 /* ------ Destaques ------------------------------------------------- */
-function Destaques() {
+export function Destaques() {
   const [tab, setTab] = React.useState("Venda");
   const [hover, setHover] = React.useState(0);
   const [items, setItems] = React.useState(FEATURED);
@@ -417,7 +417,7 @@ function Destaques() {
 }
 
 /* ------ Bairros --------------------------------------------------- */
-function Bairros() {
+export function Bairros() {
   const railRef = React.useRef(null);
   const scroll = (dir) => {
     if (!railRef.current) return;
@@ -455,7 +455,7 @@ function Bairros() {
 }
 
 /* ------ Stats ----------------------------------------------------- */
-function Stats() {
+export function Stats() {
   return (
     <section className="stats reveal" style={{ paddingTop: 96, paddingBottom: 96 }}>
       <div className="stat">
@@ -479,7 +479,7 @@ function Stats() {
 }
 
 /* ------ Sobre ----------------------------------------------------- */
-function Sobre() {
+export function Sobre() {
   return (
     <section id="sobre" className="sobre reveal">
       <div className="sobre-img" style={{ backgroundImage: "url(https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80&auto=format&fit=crop)" }} />
@@ -504,7 +504,7 @@ function Sobre() {
 }
 
 /* ------ Depoimentos ----------------------------------------------- */
-function Depoimentos() {
+export function Depoimentos() {
   return (
     <section id="depoimentos" className="reveal">
       <div className="sec-head">
@@ -528,7 +528,7 @@ function Depoimentos() {
 }
 
 /* ------ CTA ------------------------------------------------------- */
-function CTA() {
+export function CTA() {
   return (
     <section id="contato" className="cta reveal" style={{ maxWidth: "100%" }}>
       <div className="cta-bg" style={{ backgroundImage: "url(https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=2000&q=80&auto=format&fit=crop)" }} />
@@ -559,7 +559,7 @@ function CTA() {
 }
 
 /* ------ Footer ---------------------------------------------------- */
-function Footer({ brand }) {
+export function Footer({ brand }) {
   return (
     <footer>
       <div className="ft-grid">

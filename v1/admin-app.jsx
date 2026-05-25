@@ -1,5 +1,8 @@
 // Admin app — auth gate + shell
 
+import { ListingsView } from './admin-listings.jsx';
+import { PropertyForm } from './admin-form.jsx';
+
 const ADM_VIEWS = { listings: "listings", newProp: "newProp", editProp: "editProp" };
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_SECONDS = 60;

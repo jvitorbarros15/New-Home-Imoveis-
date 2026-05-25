@@ -1,5 +1,10 @@
 // New Home — Imóvel page app shell
 
+import { useTweaks, TweaksPanel, TweakSection, TweakRadio } from './tweaks-panel.jsx';
+import { Nav, Footer } from './sections.jsx';
+import { Chat } from './chat.jsx';
+import { Lightbox, GalleryHero, Identity, Description, Highlights, Features, Planta, Localizacao, Custos, Sidebar, Similar } from './imovel-sections.jsx';
+
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "brand": "aurum",
   "motion": "on",
@@ -18,7 +23,14 @@ function ImovelApp() {
     document.documentElement.setAttribute("data-motion", t.motion);
   }, [t.brand, t.motion]);
 
-  useReveal();
+  React.useEffect(() => {
+    const els = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    els.forEach(el => io.observe(el));
+    return () => io.disconnect();
+  });
 
   React.useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");

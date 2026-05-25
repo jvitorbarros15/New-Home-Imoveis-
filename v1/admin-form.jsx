@@ -32,7 +32,7 @@ function clamp(v, min, max) {
   return String(Math.max(min, Math.min(max, n)));
 }
 
-function PropertyForm({ prop, onSaved }) {
+export function PropertyForm({ prop, onSaved }) {
   const isEdit = !!prop;
 
   const [fields, setFields] = React.useState({

@@ -97,7 +97,7 @@ const I = {
 };
 
 /* ------ Lightbox -------------------------------------------------- */
-function Lightbox({ open, idx, setIdx, onClose, images }) {
+export function Lightbox({ open, idx, setIdx, onClose, images }) {
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e) => {
@@ -141,7 +141,7 @@ function Lightbox({ open, idx, setIdx, onClose, images }) {
 }
 
 /* ------ Gallery hero --------------------------------------------- */
-function GalleryHero({ prop, onOpen }) {
+export function GalleryHero({ prop, onOpen }) {
   const [tab, setTab] = React.useState("fotos");
   const [fav, setFav] = React.useState(false);
   return (
@@ -285,7 +285,7 @@ function PlantaPlaceholder({ prop }) {
 
 
 /* ------ Identity strip + specs ----------------------------------- */
-function Identity({ prop }) {
+export function Identity({ prop }) {
   const [fav, setFav] = React.useState(false);
   return (
     <>
@@ -333,7 +333,7 @@ function Identity({ prop }) {
 }
 
 /* ------ Description with AI summary ----------------------------- */
-function Description({ prop }) {
+export function Description({ prop }) {
   const [tab, setTab] = React.useState("texto");
   const [ai, setAi] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -382,7 +382,7 @@ function Description({ prop }) {
 }
 
 /* ------ Highlights ----------------------------------------------- */
-function Highlights({ prop }) {
+export function Highlights({ prop }) {
   const iconMap = { view: I.View, sun: I.Sun, key: I.Key };
   return (
     <div className="blk">
@@ -407,7 +407,7 @@ function Highlights({ prop }) {
 }
 
 /* ------ Features ------------------------------------------------- */
-function Features({ prop }) {
+export function Features({ prop }) {
   return (
     <div className="blk">
       <div className="blk-head">
@@ -434,7 +434,7 @@ function Features({ prop }) {
 }
 
 /* ------ Planta --------------------------------------------------- */
-function Planta() {
+export function Planta() {
   const [active, setActive] = React.useState(1);
   const rooms = [
     { id: 1, name: "Sala / Living", x: "30%", y: "40%" },
@@ -486,7 +486,7 @@ function Planta() {
 }
 
 /* ------ Localização ---------------------------------------------- */
-function Localizacao({ prop }) {
+export function Localizacao({ prop }) {
   const iconFor = (cat) => {
     if (cat.startsWith("Lazer") || cat === "Praia") return I.Sun;
     if (cat.startsWith("Educação")) return I.Key;
@@ -532,7 +532,7 @@ function Localizacao({ prop }) {
 }
 
 /* ------ Custos --------------------------------------------------- */
-function Custos({ prop }) {
+export function Custos({ prop }) {
   return (
     <div className="blk">
       <div className="blk-head">
@@ -571,7 +571,7 @@ function Custos({ prop }) {
 }
 
 /* ------ Sidebar -------------------------------------------------- */
-function Sidebar({ prop }) {
+export function Sidebar({ prop }) {
   return (
     <aside className="side">
       <div className="agent-card">
@@ -657,7 +657,7 @@ function VisitScheduler({ prop }) {
 }
 
 /* ------ Similar -------------------------------------------------- */
-function Similar({ prop }) {
+export function Similar({ prop }) {
   return (
     <section className="similar">
       <div className="sec-head" style={{ paddingTop: 0 }}>

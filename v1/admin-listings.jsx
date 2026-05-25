@@ -1,6 +1,6 @@
 // Admin — listings table
 
-function ListingsView({ onEdit }) {
+export function ListingsView({ onEdit }) {
   const [props, setProps]     = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError]     = React.useState("");

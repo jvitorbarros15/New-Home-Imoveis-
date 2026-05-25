@@ -1,7 +1,8 @@
 // New Home Imóveis — app shell + Tweaks
 
-// Import tweaks utilities
-const { useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakSlider } = window;
+import { useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakSlider } from './tweaks-panel.jsx';
+import { Nav, Hero, Destaques, Bairros, Stats, Sobre, Depoimentos, CTA, Footer } from './sections.jsx';
+import { Chat } from './chat.jsx';
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "brand": "aurum",
