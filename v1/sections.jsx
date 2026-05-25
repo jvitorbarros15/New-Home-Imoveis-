@@ -324,18 +324,17 @@ function Destaques() {
   const [tab, setTab] = React.useState("Venda");
   const [hover, setHover] = React.useState(0);
   const [items, setItems] = React.useState(FEATURED);
-  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (!window.sb) { setLoading(false); return; }
+    if (!window.sb) return;
     window.sb
       .from("properties")
       .select("code,title,type,region,price_brl,area_m2,bedrooms,bathrooms,parking,images,status")
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(8)
-      .then(({ data }) => {
-        if (data && data.length > 0) {
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) {
           setItems(data.map(p => ({
             type:    p.type,
             title:   p.title,
@@ -348,8 +347,8 @@ function Destaques() {
             img:     p.images?.[0] || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
             code:    p.code,
           })));
+          setHover(0);
         }
-        setLoading(false);
       });
   }, []);
 
@@ -370,8 +369,8 @@ function Destaques() {
       </div>
 
       <div className="destaques">
-        <a className="dest-hero dest-hero-link" href={`imovel.html?code=${featured?.code || ""}`}>
-          <div className="img" style={{ backgroundImage: `url(${featured?.img})` }} />
+        <a className="dest-hero dest-hero-link" href={`imovel.html?code=${encodeURIComponent(featured?.code || "")}`}>
+          <div className="img" style={{ backgroundImage: `url("${featured?.img}")` }} />
           <div className="meta">
             <div>
               <div className="dest-tag">{featured?.type} · {featured?.region}</div>
@@ -392,10 +391,10 @@ function Destaques() {
 
         <div className="dest-list">
           {items.slice(1, 4).map((p, i) => (
-            <a key={i} className="dest-card" href={`imovel.html?code=${p.code || ""}`}
+            <a key={p.code || i} className="dest-card" href={`imovel.html?code=${encodeURIComponent(p.code || "")}`}
                onMouseEnter={() => setHover(i + 1)}
                onFocus={() => setHover(i + 1)}>
-              <div className="dc-imgwrap"><div className="dc-img" style={{ backgroundImage: `url(${p.img})` }} /></div>
+              <div className="dc-imgwrap"><div className="dc-img" style={{ backgroundImage: `url("${p.img}")` }} /></div>
               <div className="dc-body">
                 <div>
                   <div className="dc-type">{p.type} · {p.region.split(" · ")[0]}</div>
