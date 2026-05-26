@@ -1,5 +1,8 @@
 // New Home Imóveis — floating chat with consultor
 
+const CHAT_URL = "https://dtagjkqubrduxpurssin.supabase.co/functions/v1/chat";
+const CHAT_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0YWdqa3F1YnJkdXhwdXJzc2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjY0MzgsImV4cCI6MjA5NTMwMjQzOH0.yDbBSZn03WwmyDy4chwH91cWJJw1whirq49EPVgwPFE";
+
 export function Chat({ brand }) {
   const [open, setOpen] = React.useState(false);
   const [input, setInput] = React.useState("");
@@ -37,28 +40,33 @@ export function Chat({ brand }) {
     setMessages(next);
     setTyping(true);
 
-    // Build conversational prompt
+    // Convert message history to API format (skip the initial greeting)
     const history = next
-      .map((m) => `${m.from === "agent" ? "Beatriz" : "Cliente"}: ${m.text}`)
-      .join("\n");
-
-    const prompt =
-      "Você é Beatriz, consultora imobiliária da New Home Imóveis, uma imobiliária de alto padrão no Rio de Janeiro. " +
-      "Atende clientes em busca de imóveis de luxo (apartamentos, coberturas, casas em condomínio) em bairros como Barra da Tijuca, Leblon, Ipanema, Lagoa, Joá, Itanhangá. " +
-      "Tom: cordial, profissional, discreto, em português brasileiro. Curto: 1 a 2 frases por resposta. Faça uma única pergunta de qualificação por vez (região? quartos? orçamento? momento?). " +
-      "Nunca invente preços ou imóveis específicos. Se o cliente pedir para falar com humano, diga que vai conectar via WhatsApp +55 21 99999-9999.\n\n" +
-      "Conversa até aqui:\n" + history + "\n\nBeatriz:";
+      .slice(1)    // skip initial agent greeting — it's in the system prompt
+      .slice(0, -1) // exclude the message just added (sent as "message")
+      .map(m => ({
+        role: m.from === "agent" ? "assistant" : "user",
+        content: m.text,
+      }));
 
     let reply = "";
     try {
-      reply = await window.claude.complete(prompt);
-      reply = (reply || "").replace(/^Beatriz:\s*/i, "").trim();
-    } catch (e) {
-      reply = "Desculpe, tive um problema técnico. Pode me chamar no WhatsApp +55 21 99999-9999?";
+      const res = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${CHAT_KEY}`,
+        },
+        body: JSON.stringify({ message: trimmed, history }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      reply = data.answer || "";
+    } catch {
+      reply = "Desculpe, tive um problema técnico. Pode me chamar no WhatsApp +55 21 99722-0589?";
     }
     if (!reply) reply = "Pode me contar um pouco mais sobre o que você procura?";
 
-    // small natural delay
     await new Promise((r) => setTimeout(r, 350));
     setTyping(false);
     setMessages((m) => [...m, { from: "agent", text: reply, time: "agora" }]);
@@ -151,13 +159,11 @@ export function Chat({ brand }) {
 
         <footer className="chat-foot">
           Prefere outro canal?
-          <a href="https://wa.me/5521999999999" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://wa.me/5521997220589" target="_blank" rel="noopener">WhatsApp</a>
           ·
-          <a href="tel:+5521999999999">Ligar</a>
+          <a href="tel:+5521997220589">Ligar</a>
         </footer>
       </div>
     </>
   );
 }
-
-window.Chat = Chat;
