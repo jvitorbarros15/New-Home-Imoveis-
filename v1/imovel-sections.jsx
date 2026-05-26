@@ -608,34 +608,65 @@ export function Sidebar({ prop }) {
 
 const BOOK_URL = "https://dtagjkqubrduxpurssin.supabase.co/functions/v1/book-visit";
 const BOOK_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0YWdqa3F1YnJkdXhwdXJzc2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjY0MzgsImV4cCI6MjA5NTMwMjQzOH0.yDbBSZn03WwmyDy4chwH91cWJJw1whirq49EPVgwPFE";
+const MN_PT = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const DN_PT = ["D","S","T","Q","Q","S","S"];
+const ALL_TIMES = ["10:00","12:00","14:00","16:00","18:00","19:30"];
+
+function toISO(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
 
 function VisitScheduler({ prop }) {
-  const [day, setDay] = React.useState(2);
-  const [time, setTime] = React.useState("14:00");
+  const today = React.useMemo(() => { const d = new Date(); d.setHours(0,0,0,0); return d; }, []);
+  const minDate = React.useMemo(() => { const d = new Date(today); d.setDate(d.getDate()+1); return d; }, [today]);
+
+  const [viewYear, setViewYear] = React.useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = React.useState(today.getMonth());
+  const [selected, setSelected] = React.useState(null);
+  const [time, setTime] = React.useState(null);
   const [mode, setMode] = React.useState("presencial");
   const [name, setName] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [estado, setEstado] = React.useState("idle");
+  const [bookedTimes, setBookedTimes] = React.useState([]);
 
-  const days = React.useMemo(() => {
-    const out = [];
-    const today = new Date();
-    const dn = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-    const mn = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
-    for (let k = 0; k < 4; k++) {
-      const d = new Date(today); d.setDate(today.getDate() + k + 1);
-      out.push({ dn: dn[d.getDay()], dd: d.getDate(), dm: mn[d.getMonth()], iso: d });
-    }
-    return out;
-  }, []);
-  const times = ["10:00", "12:00", "14:00", "16:00", "18:00", "19:30"];
+  const calDays = React.useMemo(() => {
+    const first = new Date(viewYear, viewMonth, 1);
+    const last = new Date(viewYear, viewMonth + 1, 0);
+    const cells = Array(first.getDay()).fill(null);
+    for (let d = 1; d <= last.getDate(); d++) cells.push(new Date(viewYear, viewMonth, d));
+    return cells;
+  }, [viewYear, viewMonth]);
+
+  function prevMonth() {
+    if (viewYear === today.getFullYear() && viewMonth === today.getMonth()) return;
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y-1); } else setViewMonth(m => m-1);
+  }
+  function nextMonth() {
+    const limit = new Date(today.getFullYear(), today.getMonth()+3, 1);
+    const next = new Date(viewYear, viewMonth+1, 1);
+    if (next >= limit) return;
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y+1); } else setViewMonth(m => m+1);
+  }
+
+  function selectDay(d) {
+    if (!d) return;
+    const dc = new Date(d); dc.setHours(0,0,0,0);
+    if (dc < minDate) return;
+    setSelected(d); setTime(null); setBookedTimes([]);
+    if (!window.sb) return;
+    window.sb.from("bookings").select("visit_time").eq("visit_date", toISO(d)).eq("status","confirmed")
+      .then(({ data }) => setBookedTimes(data ? data.map(b => b.visit_time) : []));
+  }
+
+  function isPast(d) { const dc = new Date(d); dc.setHours(0,0,0,0); return dc < minDate; }
+  function isSel(d) { return selected && d && d.toDateString() === selected.toDateString(); }
+  function isToday(d) { return d && d.toDateString() === today.toDateString(); }
 
   async function submit(e) {
     e.preventDefault();
-    if (!name.trim() || !phone.trim()) return;
+    if (!selected || !time || !name.trim() || !phone.trim()) return;
     setEstado("loading");
-    const d = days[day].iso;
-    const visit_date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
     try {
       const res = await fetch(BOOK_URL, {
         method: "POST",
@@ -644,7 +675,7 @@ function VisitScheduler({ prop }) {
           property_code: prop?.code ?? "N/A",
           visitor_name: name.trim(),
           visitor_phone: phone.trim(),
-          visit_date,
+          visit_date: toISO(selected),
           visit_time: time,
           visit_mode: mode,
         }),
@@ -652,9 +683,7 @@ function VisitScheduler({ prop }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erro ao agendar");
       setEstado("done");
-    } catch {
-      setEstado("error");
-    }
+    } catch { setEstado("error"); }
   }
 
   if (estado === "done") {
@@ -667,24 +696,61 @@ function VisitScheduler({ prop }) {
     );
   }
 
+  const canSubmit = selected && time && name.trim() && phone.trim() && estado !== "loading";
+
   return (
     <form className="visit" onSubmit={submit}>
       <h4>Agendar visita</h4>
       <div className="visit-sub">Confirmação em até 1h por WhatsApp.</div>
-      <div className="visit-days">
-        {days.map((d, i) => (
-          <div key={i} className={`visit-day ${i === day ? "on" : ""}`} onClick={() => setDay(i)}>
-            <div className="dn">{d.dn}</div>
-            <div className="dd">{d.dd}</div>
-            <div className="dm">{d.dm}</div>
+
+      <div className="visit-cal">
+        <div className="visit-cal-head">
+          <button type="button" className="visit-cal-nav" onClick={prevMonth}>‹</button>
+          <span className="visit-cal-title">{MN_PT[viewMonth]} {viewYear}</span>
+          <button type="button" className="visit-cal-nav" onClick={nextMonth}>›</button>
+        </div>
+        <div className="visit-cal-grid">
+          {DN_PT.map((d, i) => <div key={i} className="visit-cal-dow">{d}</div>)}
+          {calDays.map((d, i) => (
+            <div
+              key={i}
+              className={[
+                "visit-cal-day",
+                !d ? "empty" : "",
+                d && isPast(d) ? "past" : "",
+                d && isToday(d) ? "today" : "",
+                d && isSel(d) ? "selected" : "",
+              ].filter(Boolean).join(" ")}
+              onClick={() => d && !isPast(d) && selectDay(d)}
+            >
+              {d ? d.getDate() : ""}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {selected && (
+        <>
+          <div className="visit-slots-label">
+            Horários — {selected.getDate()} de {MN_PT[selected.getMonth()]}
           </div>
-        ))}
-      </div>
-      <div className="visit-times">
-        {times.map((t) => (
-          <div key={t} className={`visit-time ${t === time ? "on" : ""}`} onClick={() => setTime(t)}>{t}</div>
-        ))}
-      </div>
+          <div className="visit-times">
+            {ALL_TIMES.map(t => {
+              const booked = bookedTimes.includes(t);
+              return (
+                <div
+                  key={t}
+                  className={`visit-time ${t === time ? "on" : ""} ${booked ? "booked" : ""}`}
+                  onClick={() => !booked && setTime(t)}
+                >
+                  {t}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
       <div className="visit-mode">
         <button type="button" className={mode === "presencial" ? "on" : ""} onClick={() => setMode("presencial")}>Presencial</button>
         <button type="button" className={mode === "video" ? "on" : ""} onClick={() => setMode("video")}>Vídeo</button>
@@ -694,7 +760,7 @@ function VisitScheduler({ prop }) {
         <input className="visit-input" placeholder="WhatsApp" value={phone} onChange={e => setPhone(e.target.value)} required />
       </div>
       {estado === "error" && <div className="visit-error">Erro ao agendar. Tente pelo WhatsApp.</div>}
-      <button type="submit" className="visit-cta" disabled={estado === "loading" || !name.trim() || !phone.trim()}>
+      <button type="submit" className="visit-cta" disabled={!canSubmit}>
         {estado === "loading" ? "Agendando…" : "Confirmar visita"}
       </button>
     </form>
