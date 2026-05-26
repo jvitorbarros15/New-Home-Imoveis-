@@ -908,6 +908,21 @@
   transition: filter 0.3s ease;
 }
 .visit-cta:hover { filter: brightness(1.1); }
+.visit-cta:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
+.visit-fields { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.visit-input {
+  width: 100%; padding: 10px 12px;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--ink); font-size: 13px;
+  transition: border-color 0.2s;
+}
+.visit-input:focus { outline: none; border-color: var(--accent); }
+.visit-input::placeholder { color: var(--ink-3); }
+.visit-error { font-size: 11px; color: oklch(0.65 0.18 25); margin-top: 8px; text-align: center; }
+.visit-success { text-align: center; padding: 32px 24px; }
+.visit-check { font-size: 32px; color: var(--accent); margin-bottom: 12px; }
+.visit-success h4 { font-family: var(--serif); font-size: 20px; margin-bottom: 8px; }
+.visit-success p { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
 
 /* similar -------------------------------------------------------- */
 .similar { padding: 0 var(--pad) 100px; }

@@ -606,10 +606,16 @@ export function Sidebar({ prop }) {
   );
 }
 
+const BOOK_URL = "https://dtagjkqubrduxpurssin.supabase.co/functions/v1/book-visit";
+const BOOK_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0YWdqa3F1YnJkdXhwdXJzc2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjY0MzgsImV4cCI6MjA5NTMwMjQzOH0.yDbBSZn03WwmyDy4chwH91cWJJw1whirq49EPVgwPFE";
+
 function VisitScheduler({ prop }) {
   const [day, setDay] = React.useState(2);
   const [time, setTime] = React.useState("14:00");
   const [mode, setMode] = React.useState("presencial");
+  const [name, setName] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [estado, setEstado] = React.useState("idle");
 
   const days = React.useMemo(() => {
     const out = [];
@@ -618,16 +624,48 @@ function VisitScheduler({ prop }) {
     const mn = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
     for (let k = 0; k < 4; k++) {
       const d = new Date(today); d.setDate(today.getDate() + k + 1);
-      out.push({ dn: dn[d.getDay()], dd: d.getDate(), dm: mn[d.getMonth()] });
+      out.push({ dn: dn[d.getDay()], dd: d.getDate(), dm: mn[d.getMonth()], iso: d });
     }
     return out;
   }, []);
   const times = ["10:00", "12:00", "14:00", "16:00", "18:00", "19:30"];
 
-  const submit = (e) => {
+  async function submit(e) {
     e.preventDefault();
-    alert(`Visita ${mode} solicitada para ${days[day].dn} ${days[day].dd}/${days[day].dm} às ${time}. Beatriz confirmará por WhatsApp.`);
-  };
+    if (!name.trim() || !phone.trim()) return;
+    setEstado("loading");
+    const d = days[day].iso;
+    const visit_date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    try {
+      const res = await fetch(BOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${BOOK_KEY}` },
+        body: JSON.stringify({
+          property_code: prop?.code ?? "N/A",
+          visitor_name: name.trim(),
+          visitor_phone: phone.trim(),
+          visit_date,
+          visit_time: time,
+          visit_mode: mode,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erro ao agendar");
+      setEstado("done");
+    } catch {
+      setEstado("error");
+    }
+  }
+
+  if (estado === "done") {
+    return (
+      <div className="visit visit-success">
+        <div className="visit-check">✓</div>
+        <h4>Visita confirmada!</h4>
+        <p>Beatriz entrará em contato pelo WhatsApp em breve para confirmar os detalhes.</p>
+      </div>
+    );
+  }
 
   return (
     <form className="visit" onSubmit={submit}>
@@ -651,7 +689,14 @@ function VisitScheduler({ prop }) {
         <button type="button" className={mode === "presencial" ? "on" : ""} onClick={() => setMode("presencial")}>Presencial</button>
         <button type="button" className={mode === "video" ? "on" : ""} onClick={() => setMode("video")}>Vídeo</button>
       </div>
-      <button type="submit" className="visit-cta">Solicitar visita</button>
+      <div className="visit-fields">
+        <input className="visit-input" placeholder="Seu nome" value={name} onChange={e => setName(e.target.value)} required />
+        <input className="visit-input" placeholder="WhatsApp" value={phone} onChange={e => setPhone(e.target.value)} required />
+      </div>
+      {estado === "error" && <div className="visit-error">Erro ao agendar. Tente pelo WhatsApp.</div>}
+      <button type="submit" className="visit-cta" disabled={estado === "loading" || !name.trim() || !phone.trim()}>
+        {estado === "loading" ? "Agendando…" : "Confirmar visita"}
+      </button>
     </form>
   );
 }
