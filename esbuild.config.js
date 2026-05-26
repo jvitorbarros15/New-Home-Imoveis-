@@ -113,6 +113,7 @@ Promise.all([
     { src: "v1/imovel.css", dst: "v1/dist/imovel.css" },
     { src: "v1/admin.css",  dst: "v1/dist/admin.css"  },
     { src: "v1/usa.css",    dst: "v1/dist/usa.css"    },
+    { src: "v1/pages.css",  dst: "v1/dist/pages.css"  },
   ];
 
   cssFiles.forEach(({ src, dst }) => {
